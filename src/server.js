@@ -1,18 +1,15 @@
 import express from 'express';
 import pino from 'pino-http';
 import cors from 'cors';
+import mongoose from 'mongoose';
 import { ContactsCollection } from './db/models/contacts.js';
 
 export const setupServer = () => {
   const app = express();
   const PORT = process.env.PORT || 3000;
 
-  // Middleware для роботи з JSON
   app.use(express.json());
-  // Налаштування CORS
   app.use(cors());
-
-  // Налаштування логера
   app.use(
     pino({
       transport: {
@@ -20,7 +17,7 @@ export const setupServer = () => {
       },
     }),
   );
-  //Пошук всіх контактів
+
   app.get('/contacts', async (req, res) => {
     try {
       const contacts = await ContactsCollection.find();
@@ -34,20 +31,27 @@ export const setupServer = () => {
     }
   });
 
-  //Пошук одного контакта
-  app.get('/contactId', async (req, res) => {
+  app.get('/contacts/:contactId', async (req, res) => {
+    const { contactId } = req.params;
+
+    if (!mongoose.Types.ObjectId.isValid(contactId)) {
+      return res.status(400).json({
+        message: `Invalid contact ID: ${contactId}`,
+      });
+    }
+
     try {
-      const { contactId } = req.params;
       const contact = await ContactsCollection.findById(contactId);
 
       if (!contact) {
         return res.status(404).json({
-          message: 'Contact not found',
+          message: `Contact with id ${contactId} not found`,
         });
       }
+
       res.send({
         status: 200,
-        message: `Successfully found contact with id ${contactId}!`,
+        message: `Successfully found contact with id ${contactId}`,
         data: contact,
       });
     } catch (error) {
@@ -55,14 +59,13 @@ export const setupServer = () => {
     }
   });
 
-  app.use('*', (req, res, next) => {
-    res.status(404).json({
-      message: 'Not found',
-    });
+  app.use((req, res) => {
+    res.status(404).json({ message: 'Route not found' });
   });
 
   app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
   });
 };
+
 export default setupServer;
