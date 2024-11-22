@@ -1,24 +1,14 @@
+// src/routers/contacts.js;
+
 import { Router } from 'express';
+import { getAllContacts, getContactById } from '../controllers/contacts.js';
 
 const router = Router();
 
-router.get('/', (req, res) => {
-  res.json({
-    message: 'Hello world!',
-  });
-});
+//Rout
+router.get('/contacts', getAllContacts);
 
-router.use((req, res, next) => {
-  res.status(404).json({
-    message: 'Not found',
-  });
-});
-
-router.use((err, req, res, next) => {
-  res.status(500).json({
-    message: 'Something went wrong',
-    error: err.message,
-  });
-});
+//Rout
+router.get('/contacts/:contactId', getContactById);
 
 export default router;
