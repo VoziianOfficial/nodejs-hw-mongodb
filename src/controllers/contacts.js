@@ -3,7 +3,8 @@
 import mongoose from 'mongoose';
 import createHttpError from 'http-errors';
 import { ContactsCollection } from '../db/models/contacts.js';
-import { createContact } from '../services/contacts.js';
+import { createContact, deleteContact } from '../services/contacts.js';
+import { updateContact } from '../services/contacts.js';
 // all
 export const getAllContacts = async (req, res) => {
   const contacts = await ContactsCollection.find();
@@ -44,4 +45,36 @@ export const createContactsController = async (req, res) => {
     message: `Successfully created a contact!`,
     data: contact,
   });
+};
+
+//patch
+export const updateContactController = async (req, res) => {
+  const { contactId } = req.params;
+  const updateData = req.body;
+
+  const updatedContact = await updateContact(contactId, updateData);
+
+  if (!updatedContact) {
+    throw createHttpError(404, 'Contact not found');
+  }
+
+  res.json({
+    status: 200,
+    message: 'Successfully patched a contact!',
+    data: updatedContact,
+  });
+};
+
+//delete
+export const deleteContactController = async (req, res, next) => {
+  const { contactId } = req.params;
+
+  const contact = await deleteContact(contactId);
+
+  if (!contact) {
+    next(createHttpError(404, 'Contact not found'));
+    return;
+  }
+
+  res.status(204).send();
 };
