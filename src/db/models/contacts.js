@@ -1,3 +1,4 @@
+//src/db/models/contacts.js
 import { model, Schema } from 'mongoose';
 
 const contactsSchema = new Schema(
@@ -13,10 +14,11 @@ const contactsSchema = new Schema(
     email: {
       type: String,
     },
-    isFavourite: {
+    isFavorite: {
       type: Boolean,
       default: false,
     },
+
     contactType: {
       type: String,
       enum: ['work', 'home', 'personal'],

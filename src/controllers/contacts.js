@@ -5,6 +5,10 @@ import createHttpError from 'http-errors';
 import { ContactsCollection } from '../db/models/contacts.js';
 import { createContact, deleteContact } from '../services/contacts.js';
 import { updateContact } from '../services/contacts.js';
+import { parsePaginationParams } from '../utils/parsePaginationParams.js';
+import { parseSortParams } from '../utils/parseSortParams.js';
+import { parseFilterParams } from '../utils/parseFilterParams.js';
+
 // all
 export const getAllContacts = async (req, res) => {
   const contacts = await ContactsCollection.find();
@@ -77,4 +81,35 @@ export const deleteContactController = async (req, res, next) => {
   }
 
   res.status(204).send();
+};
+
+//get
+export const getContactsController = async (req, res) => {
+  const { page, perPage } = parsePaginationParams(req.query);
+
+  const { sortBy, sortOrder } = parseSortParams(req.query);
+
+  const filter = parseFilterParams(req.query);
+
+  const contacts = await getAllContacts({
+    page,
+    perPage,
+    sortBy,
+    sortOrder,
+    filter,
+  });
+
+  res.json({
+    status: 200,
+    message: 'Successfully found contacts!',
+    data: {
+      data: contacts,
+      page: 2,
+      perPage: 4,
+      totalItems: 6,
+      totalPages: 2,
+      hasPreviousPage: true,
+      hasNextPage: false,
+    },
+  });
 };
