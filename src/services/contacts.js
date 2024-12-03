@@ -34,43 +34,16 @@ export const deleteContact = async (contactId) => {
 };
 
 //get
-export const getAllContacts = async ({
-  page = 1,
-  perPage = 10,
-  sortOrder = SORT_ORDER,
-  sortBy = '_id',
-  filter = {},
-}) => {
+export const getAllContacts = async ({ page, perPage }) => {
   const limit = perPage;
   const skip = (page - 1) * perPage;
 
   const contactsQuery = ContactsCollection.find();
+  const contactsCount = await ContactsCollection.find()
+    .merge(contactsQuery)
+    .countDocuments();
 
-  if (filter.type) {
-    contactsQuery.where('contactType').equals(filter.type);
-  }
-  if (typeof filter.isFavorite !== 'undefined') {
-    contactsQuery.where('isFavorite').equals(filter.isFavorite);
-  }
-
-  // const contactsCount = await ContactsCollection.find()
-  //   .merge(contactsQuery)
-  //   .countDocuments();
-
-  // const contacts = await contactsQuery
-  //   .skip(skip)
-  //   .limit(limit)
-  //   .sort({ [sortBy]: sortOrder })
-  //   .exec();
-
-  const [contactsCount, contacts] = await Promise.all([
-    ContactsCollection.find().merge(contactsQuery).countDocuments(),
-    contactsQuery
-      .skip(skip)
-      .limit(limit)
-      .sort({ [sortBy]: sortOrder })
-      .exec(),
-  ]);
+  const contacts = await contactsQuery.skip(skip).limit(limit).exec();
 
   const paginationData = calculatePaginationData(contactsCount, perPage, page);
 

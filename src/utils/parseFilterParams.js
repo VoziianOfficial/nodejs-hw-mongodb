@@ -3,11 +3,13 @@
 export const parseFilterParams = (query) => {
   const { type, isFavourite } = query;
 
-  const parsedIsFavorite =
+  const parsedIsFavourite =
     isFavourite === 'true' ? true : isFavourite === 'false' ? false : undefined;
 
   return {
-    type,
-    isFavourite: parsedIsFavorite,
+    ...(type ? { contactType: type } : {}),
+    ...(parsedIsFavourite !== undefined
+      ? { isFavourite: parsedIsFavourite }
+      : {}),
   };
 };

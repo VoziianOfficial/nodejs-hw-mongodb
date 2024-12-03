@@ -85,30 +85,14 @@ export const deleteContactController = async (req, res, next) => {
 //get
 export const getContactsController = async (req, res) => {
   const { page, perPage } = parsePaginationParams(req.query);
-
-  const { sortBy, sortOrder } = parseSortParams(req.query);
-
-  const filter = parseFilterParams(req.query);
-
   const contacts = await getAllContacts({
     page,
     perPage,
-    sortBy,
-    sortOrder,
-    filter,
   });
 
   res.json({
     status: 200,
-    message: 'Successfully found contacts!',
-    data: {
-      data: contacts,
-      page: 2,
-      perPage: 4,
-      totalItems: 6,
-      totalPages: 2,
-      hasPreviousPage: true,
-      hasNextPage: false,
-    },
+    message: 'Successfully found students!',
+    data: contacts,
   });
 };
