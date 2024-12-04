@@ -3,14 +3,17 @@
 import mongoose from 'mongoose';
 import createHttpError from 'http-errors';
 import { ContactsCollection } from '../db/models/contacts.js';
-import { createContact, deleteContact } from '../services/contacts.js';
+import {
+  createContact,
+  deleteContact,
+  getAllContacts,
+} from '../services/contacts.js';
 import { updateContact } from '../services/contacts.js';
 import { parsePaginationParams } from '../utils/parsePaginationParams.js';
 import { parseSortParams } from '../utils/parseSortParams.js';
-import { parseFilterParams } from '../utils/parseFilterParams.js';
 
 // all
-export const getAllContacts = async (req, res) => {
+export const getAllContactsBasic = async (req, res) => {
   const contacts = await ContactsCollection.find();
   res.json({
     status: 200,
@@ -85,9 +88,13 @@ export const deleteContactController = async (req, res, next) => {
 //get
 export const getContactsController = async (req, res) => {
   const { page, perPage } = parsePaginationParams(req.query);
+  const { sortBy, sortOrder } = parseSortParams(req.query);
+
   const contacts = await getAllContacts({
     page,
     perPage,
+    sortBy,
+    sortOrder,
   });
 
   res.json({
