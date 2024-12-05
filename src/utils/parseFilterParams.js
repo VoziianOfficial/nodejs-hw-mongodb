@@ -1,13 +1,19 @@
 // src/utils/parseFilterParams.js
 
+const parseBoolean = (value) => {
+  if (value === 'true') return true;
+  if (value === 'false') return false;
+  return undefined;
+};
+
 export const parseFilterParams = (query) => {
   const { type, isFavourite } = query;
 
-  const parsedIsFavourite =
-    isFavourite === 'true' ? true : isFavourite === 'false' ? false : undefined;
+  const parsedType = type; // Неизмененный тип
+  const parsedIsFavourite = parseBoolean(isFavourite); // Преобразование в boolean
 
   return {
-    ...(type ? { contactType: type } : {}),
+    ...(parsedType ? { contactType: parsedType } : {}),
     ...(parsedIsFavourite !== undefined
       ? { isFavourite: parsedIsFavourite }
       : {}),

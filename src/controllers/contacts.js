@@ -9,6 +9,7 @@ import {
   getAllContacts,
 } from '../services/contacts.js';
 import { updateContact } from '../services/contacts.js';
+import { parseFilterParams } from '../utils/parseFilterParams.js';
 import { parsePaginationParams } from '../utils/parsePaginationParams.js';
 import { parseSortParams } from '../utils/parseSortParams.js';
 
@@ -89,17 +90,28 @@ export const deleteContactController = async (req, res, next) => {
 export const getContactsController = async (req, res) => {
   const { page, perPage } = parsePaginationParams(req.query);
   const { sortBy, sortOrder } = parseSortParams(req.query);
+  const filter = parseFilterParams(req.query);
 
-  const contacts = await getAllContacts({
-    page,
-    perPage,
-    sortBy,
-    sortOrder,
-  });
+  try {
+    const contacts = await getAllContacts({
+      page,
+      perPage,
+      sortBy,
+      sortOrder,
+      filter, // Передаем фильтры в сервис
+    });
 
-  res.json({
-    status: 200,
-    message: 'Successfully found students!',
-    data: contacts,
-  });
+    res.json({
+      status: 200,
+      message: 'Successfully found contacts!',
+      data: contacts.data,
+      meta: contacts.meta,
+    });
+  } catch (error) {
+    res.status(500).json({
+      status: 500,
+      message: 'Failed to fetch contacts',
+      error: error.message,
+    });
+  }
 };
