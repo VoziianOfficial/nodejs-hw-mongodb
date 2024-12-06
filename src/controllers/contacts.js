@@ -93,7 +93,7 @@ export const getContactsController = async (req, res) => {
   const filter = parseFilterParams(req.query);
 
   try {
-    const contacts = await getAllContacts({
+    const { data, ...meta } = await getAllContacts({
       page,
       perPage,
       sortBy,
@@ -104,8 +104,10 @@ export const getContactsController = async (req, res) => {
     res.json({
       status: 200,
       message: 'Successfully found contacts!',
-      data: contacts.data,
-      meta: contacts.meta,
+      data: {
+        data,
+        ...meta, // Передаем пагинационные метаданные
+      },
     });
   } catch (error) {
     res.status(500).json({
