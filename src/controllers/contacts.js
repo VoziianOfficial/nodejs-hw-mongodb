@@ -98,7 +98,7 @@ export const getContactsController = async (req, res) => {
       perPage,
       sortBy,
       sortOrder,
-      filter, // Передаем фильтры в сервис
+      filter,
     });
 
     res.json({
@@ -106,7 +106,7 @@ export const getContactsController = async (req, res) => {
       message: 'Successfully found contacts!',
       data: {
         data,
-        ...meta, // Передаем пагинационные метаданные
+        ...meta,
       },
     });
   } catch (error) {

@@ -2,7 +2,6 @@
 import { ContactsCollection } from '../db/models/contacts.js';
 import createHttpError from 'http-errors';
 import { calculatePaginationData } from '../utils/calculatePaginationData.js';
-import { SORT_ORDER } from '../constants/index.js';
 
 //create
 export const createContact = async (payload) => {
@@ -37,9 +36,9 @@ export const deleteContact = async (contactId) => {
 export const getAllContacts = async ({
   page = 1,
   perPage = 10,
-  sortOrder = SORT_ORDER.ASC,
+  sortOrder = 'asc',
   sortBy = '_id',
-  filter = {}, // Получаем фильтры
+  filter = {},
 }) => {
   const limit = perPage;
   const skip = (page - 1) * perPage;
