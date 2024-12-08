@@ -46,13 +46,28 @@ export const getContactById = async (req, res) => {
 
 // post
 export const createContactsController = async (req, res) => {
-  const contact = await createContact(req.body);
+  try {
+    const { email } = req.body;
 
-  res.status(201).json({
-    status: 201,
-    message: `Successfully created a contact!`,
-    data: contact,
-  });
+    // Проверяем, есть ли контакт с таким email
+    const existingContact = await ContactsCollection.findOne({ email });
+    if (existingContact) {
+      throw createHttpError(400, `Contact with email ${email} already exists`);
+    }
+
+    const contact = await createContact(req.body);
+
+    res.status(201).json({
+      status: 201,
+      message: `Successfully created a contact!`,
+      data: contact,
+    });
+  } catch (error) {
+    res.status(error.status || 500).json({
+      status: error.status || 500,
+      message: error.message,
+    });
+  }
 };
 
 //patch

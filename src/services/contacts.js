@@ -5,6 +5,18 @@ import { calculatePaginationData } from '../utils/calculatePaginationData.js';
 
 //create
 export const createContact = async (payload) => {
+  // Проверяем существование контакта с таким email
+  const existingContact = await ContactsCollection.findOne({
+    email: payload.email,
+  });
+  if (existingContact) {
+    throw createHttpError(
+      400,
+      `Contact with email ${payload.email} already exists`,
+    );
+  }
+
+  // Если email уникален, создаем контакт
   const contact = await ContactsCollection.create(payload);
   return contact;
 };
