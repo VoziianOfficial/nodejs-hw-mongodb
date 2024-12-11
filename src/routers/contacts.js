@@ -13,6 +13,7 @@ import {
   updateContactSchema,
 } from '../validation/contacts.js';
 import { isValidId } from '../middlewares/isValidId.js';
+import { authenticate } from '../middlewares/authenticate.js';
 
 const router = Router();
 
@@ -36,4 +37,7 @@ router.patch(
 //Rout
 router.delete('/:contactId', isValidId, ctrlWrapper(deleteContactController));
 
+//Rout
+router.use(authenticate);
+router.get('/', ctrlWrapper(getContactsController));
 export default router;
