@@ -17,27 +17,22 @@ import { authenticate } from '../middlewares/authenticate.js';
 
 const router = Router();
 
-//Rout
+// Аутентификация применяется ко всем маршрутам
+router.use(authenticate);
+
 router.get('/', ctrlWrapper(getContactsController));
-//Rout
 router.get('/:contactId', isValidId, ctrlWrapper(getContactById));
-//Rout
 router.post(
   '/',
   validateBody(createContactSchema),
   ctrlWrapper(createContactsController),
 );
-//Rout
 router.patch(
   '/:contactId',
   isValidId,
   validateBody(updateContactSchema),
   ctrlWrapper(updateContactController),
 );
-//Rout
 router.delete('/:contactId', isValidId, ctrlWrapper(deleteContactController));
 
-//Rout
-router.use(authenticate);
-router.get('/', ctrlWrapper(getContactsController));
 export default router;

@@ -1,4 +1,3 @@
-//src/ server.js
 import express from 'express';
 import pino from 'pino-http';
 import cors from 'cors';
@@ -11,8 +10,11 @@ export const setupServer = () => {
   const app = express();
   const PORT = process.env.PORT || 3000;
 
+  // Подключение middleware
   app.use(express.json());
   app.use(cors());
+  app.use(cookieParser()); // Подключаем cookie-parser для работы с cookies
+
   app.use(
     pino({
       transport: {
@@ -21,22 +23,19 @@ export const setupServer = () => {
     }),
   );
 
+  // Подключение маршрутов
   app.use(router);
+
+  // Обработка несуществующих маршрутов
   app.use('*', notFoundHandler);
+
+  // Обработка ошибок
   app.use(errorHandler);
 
+  // Запуск сервера
   app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
   });
 };
 
 export default setupServer;
-
-
-export const startServer = () => {
-  const app = express();
-
-  app.use(express.json());
-  app.use(cors());
-  app.use(cookieParser);
-}
