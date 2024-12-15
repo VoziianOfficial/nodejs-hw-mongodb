@@ -3,12 +3,7 @@
 import mongoose from 'mongoose';
 import createHttpError from 'http-errors';
 import { ContactsCollection } from '../db/models/contacts.js';
-import {
-  createContact,
-  deleteContact,
-  getAllContacts,
-} from '../services/contacts.js';
-import { updateContact } from '../services/contacts.js';
+import { createContact, getAllContacts } from '../services/contacts.js';
 import { parseFilterParams } from '../utils/parseFilterParams.js';
 import { parsePaginationParams } from '../utils/parsePaginationParams.js';
 import { parseSortParams } from '../utils/parseSortParams.js';
