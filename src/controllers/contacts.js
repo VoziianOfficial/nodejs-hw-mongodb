@@ -1,68 +1,47 @@
-//src/controller/contacts.js
+//src / controllers / contacts.js;
+import {
+  createContact,
+  updateContact,
+  deleteContact,
+  getAllContacts,
+  getContactByIdService,
+} from '../services/contacts.js'; // Все вызовы сервисов импортируются
 
-import mongoose from 'mongoose';
-import createHttpError from 'http-errors';
-import { ContactsCollection } from '../db/models/contacts.js';
-import { createContact, getAllContacts } from '../services/contacts.js';
-import { parseFilterParams } from '../utils/parseFilterParams.js';
-import { parsePaginationParams } from '../utils/parsePaginationParams.js';
-import { parseSortParams } from '../utils/parseSortParams.js';
+// Получение всех контактов
+export const getContactsController = async (req, res) => {
+  const { page, perPage, sortBy, sortOrder, filter } = req.query;
 
-// all
-export const getAllContactsBasic = async (req, res) => {
-  const contacts = await ContactsCollection.find();
-  res.json({
-    status: 200,
-    message: 'Successfully found contacts!',
-    data: contacts,
-  });
+  try {
+    const { data, ...meta } = await getAllContacts({
+      page,
+      perPage,
+      sortBy,
+      sortOrder,
+      filter: { ...filter, userId: req.user._id }, // Добавляем фильтр по userId
+    });
+
+    res.json({
+      status: 200,
+      message: 'Contacts retrieved successfully',
+      data: { data, ...meta },
+    });
+  } catch (error) {
+    res.status(error.status || 500).json({
+      status: error.status || 500,
+      message: error.message,
+    });
+  }
 };
 
-// id
+// Получение контакта по ID
 export const getContactById = async (req, res) => {
   const { contactId } = req.params;
 
-  if (!mongoose.Types.ObjectId.isValid(contactId)) {
-    throw createHttpError(400, `Invalid contact ID: ${contactId}`);
-  }
-
-  const contact = await ContactsCollection.findOne({
-    _id: contactId,
-    userId: req.user._id, // Перевіряємо, що контакт належить користувачу
-  });
-
-  if (!contact) {
-    throw createHttpError(404, 'Contact not found');
-  }
-
-  res.json({
-    status: 200,
-    message: `Successfully found contact with id ${contactId}`,
-    data: contact,
-  });
-};
-
-// post
-export const createContactsController = async (req, res) => {
   try {
-    const { email } = req.body;
-
-    // Проверяем, есть ли контакт с таким email
-    const existingContact = await ContactsCollection.findOne({
-      email,
-      userId: req.user._id,
-    });
-    if (existingContact) {
-      throw createHttpError(400, `Contact with email ${email} already exists`);
-    }
-
-    const contactData = { ...req.body, userId: req.user._id };
-
-    const contact = await createContact(contactData);
-
-    res.status(201).json({
-      status: 201,
-      message: `Successfully created a contact!`,
+    const contact = await getContactByIdService(contactId, req.user._id);
+    res.json({
+      status: 200,
+      message: `Contact with ID ${contactId} retrieved successfully`,
       data: contact,
     });
   } catch (error) {
@@ -73,72 +52,60 @@ export const createContactsController = async (req, res) => {
   }
 };
 
-//patch
+// Создание нового контакта
+export const createContactsController = async (req, res) => {
+  try {
+    const contactData = { ...req.body, userId: req.user._id };
+    const contact = await createContact(contactData);
+
+    res.status(201).json({
+      status: 201,
+      message: 'Contact created successfully',
+      data: contact,
+    });
+  } catch (error) {
+    res.status(error.status || 500).json({
+      status: error.status || 500,
+      message: error.message,
+    });
+  }
+};
+
+// Обновление контакта
 export const updateContactController = async (req, res) => {
   const { contactId } = req.params;
   const updateData = req.body;
 
-  const contact = await ContactsCollection.findOneAndUpdate(
-    { _id: contactId, userId: req.user._id }, // Фільтруємо за userId
-    updateData,
-    { new: true, runValidators: true },
-  );
-
-  if (!contact) {
-    throw createHttpError(404, 'Contact not found');
+  try {
+    const updatedContact = await updateContact(
+      contactId,
+      updateData,
+      req.user._id,
+    );
+    res.json({
+      status: 200,
+      message: 'Contact updated successfully',
+      data: updatedContact,
+    });
+  } catch (error) {
+    res.status(error.status || 500).json({
+      status: error.status || 500,
+      message: error.message,
+    });
   }
-
-  res.json({
-    status: 200,
-    message: 'Successfully updated the contact!',
-    data: contact,
-  });
 };
 
-//delete
+// Удаление контакта
 export const deleteContactController = async (req, res) => {
   const { contactId } = req.params;
 
-  const contact = await ContactsCollection.findOneAndDelete({
-    _id: contactId,
-    userId: req.user._id, // Перевіряємо, що контакт належить користувачу
-  });
-
-  if (!contact) {
-    throw createHttpError(404, 'Contact not found');
-  }
-
-  res.status(204).send();
-};
-
-//get
-export const getContactsController = async (req, res) => {
-  const { page, perPage } = parsePaginationParams(req.query);
-  const { sortBy, sortOrder } = parseSortParams(req.query);
-  const filter = { ...parseFilterParams(req.query), userId: req.user._id }; // Фільтруємо за userId
-
   try {
-    const { data, ...meta } = await getAllContacts({
-      page,
-      perPage,
-      sortBy,
-      sortOrder,
-      filter,
-    });
-
-    res.json({
-      status: 200,
-      message: 'Successfully found contacts!',
-      data: {
-        data,
-        ...meta,
-      },
-    });
+    await deleteContact(contactId, req.user._id);
+    res.status(204).send();
   } catch (error) {
-    res.status(500).json({
-      status: 500,
-      message: 'Failed to fetch contacts',
-      error: error.message,
+    res.status(error.status || 500).json({
+      status: error.status || 500,
+      message: error.message,
     });
   }
 };
