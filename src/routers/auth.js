@@ -13,6 +13,7 @@ import { logoutUserController } from '../controllers/auth.js';
 import { refreshUsersSessionController } from '../controllers/auth.js';
 import { requestResetEmailSchema } from '../validation/auth.js';
 import { requestResetEmailController } from '../controllers/auth.js';
+
 const router = Router();
 
 router.post(

@@ -1,13 +1,16 @@
 //src / controllers / contacts.js;
+import createHttpError from 'http-errors';
 import {
   createContact,
   updateContact,
   deleteContact,
   getAllContacts,
   getContactByIdService,
-} from '../services/contacts.js'; // Все вызовы сервисов импортируются
+} from '../services/contacts.js';
+import { saveFileToUploadDir } from '../utils/saveFileToUploadDir.js';
+import { saveFileToCloudinary } from '../utils/saveFileToCloudinary.js';
 
-// Получение всех контактов
+// get all
 export const getContactsController = async (req, res) => {
   const { page, perPage, sortBy, sortOrder, filter } = req.query;
 
@@ -17,7 +20,7 @@ export const getContactsController = async (req, res) => {
       perPage,
       sortBy,
       sortOrder,
-      filter: { ...filter, userId: req.user._id }, // Добавляем фильтр по userId
+      filter: { ...filter, userId: req.user._id },
     });
 
     res.json({
@@ -33,7 +36,7 @@ export const getContactsController = async (req, res) => {
   }
 };
 
-// Получение контакта по ID
+// get by id
 export const getContactById = async (req, res) => {
   const { contactId } = req.params;
 
@@ -52,7 +55,7 @@ export const getContactById = async (req, res) => {
   }
 };
 
-// Создание нового контакта
+// create
 export const createContactsController = async (req, res) => {
   try {
     const contactData = { ...req.body, userId: req.user._id };
@@ -71,7 +74,7 @@ export const createContactsController = async (req, res) => {
   }
 };
 
-// Обновление контакта
+// update
 export const updateContactController = async (req, res) => {
   const { contactId } = req.params;
   const updateData = req.body;
@@ -95,7 +98,7 @@ export const updateContactController = async (req, res) => {
   }
 };
 
-// Удаление контакта
+// delete
 export const deleteContactController = async (req, res) => {
   const { contactId } = req.params;
 
@@ -108,4 +111,36 @@ export const deleteContactController = async (req, res) => {
       message: error.message,
     });
   }
+};
+
+// patch
+
+export const patchStudentController = async (req, res, next) => {
+  const { contactId } = req.params;
+  const photo = req.file;
+
+  let photoUrl;
+
+  if (photo) {
+    if (process.env.ENABLE_CLOUDINARY === 'true') {
+      photoUrl = await saveFileToCloudinary(photo);
+    } else {
+      photoUrl = await saveFileToUploadDir(photo);
+    }
+  }
+
+  const result = await updateContact(contactId, {
+    ...req.body,
+    photo: photoUrl,
+  });
+
+  if (!result) {
+    next(createHttpError(404, 'Contact not found'));
+    return;
+  }
+  res.json({
+    status: 200,
+    message: `Successfully patched a contact!`,
+    data: result.student,
+  });
 };
