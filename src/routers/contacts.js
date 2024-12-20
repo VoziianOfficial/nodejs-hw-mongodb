@@ -1,3 +1,4 @@
+//src/router/contacts.js
 import { Router } from 'express';
 import {
   getContactById,
@@ -22,6 +23,7 @@ const router = Router();
 router.use(authenticate);
 
 router.get('/', ctrlWrapper(getContactsController));
+
 router.get('/:contactId', isValidId, ctrlWrapper(getContactById));
 
 router.post(

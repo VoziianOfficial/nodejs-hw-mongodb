@@ -58,7 +58,14 @@ export const getContactById = async (req, res) => {
 // create
 export const createContactsController = async (req, res) => {
   try {
-    const contactData = { ...req.body, userId: req.user._id };
+    const photo = req.file ? await saveFileToCloudinary(req.file) : null;
+
+    const contactData = {
+      ...req.body,
+      userId: req.user._id,
+      photo,
+    };
+
     const contact = await createContact(contactData);
 
     res.status(201).json({
@@ -67,6 +74,7 @@ export const createContactsController = async (req, res) => {
       data: contact,
     });
   } catch (error) {
+    console.error('Error creating contact:', error);
     res.status(error.status || 500).json({
       status: error.status || 500,
       message: error.message,
@@ -114,7 +122,6 @@ export const deleteContactController = async (req, res) => {
 };
 
 // patch
-
 export const patchStudentController = async (req, res, next) => {
   const { contactId } = req.params;
   const photo = req.file;
@@ -141,6 +148,6 @@ export const patchStudentController = async (req, res, next) => {
   res.json({
     status: 200,
     message: `Successfully patched a contact!`,
-    data: result.student,
+    data: result,
   });
 };

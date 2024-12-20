@@ -67,6 +67,7 @@ const createSession = () => {
   };
 };
 
+//refresh
 export const refreshUsersSession = async ({ sessionId, refreshToken }) => {
   const session = await SessionsCollection.findOne({
     _id: sessionId,
@@ -94,13 +95,11 @@ export const refreshUsersSession = async ({ sessionId, refreshToken }) => {
   });
 };
 
-//reset email
+//request
 const TEMPLATES_DIR = path.resolve('src/templates');
 
-// reset Request
 export const requestResetToken = async (email) => {
   const user = await UsersCollection.findOne({ email });
-
   if (!user) {
     throw createHttpError(404, 'User not found!');
   }
@@ -108,17 +107,13 @@ export const requestResetToken = async (email) => {
   const resetToken = jwt.sign(
     { sub: user._id, email },
     process.env.JWT_SECRET,
-    {
-      expiresIn: '15m',
-    },
+    { expiresIn: '5m' },
   );
 
-  // generation HTML of Handlebars
   const resetPasswordTemplatePath = path.join(
     TEMPLATES_DIR,
     'reset-password-email.html',
   );
-
   const templateSource = await fs.readFile(resetPasswordTemplatePath, 'utf-8');
   const template = handlebars.compile(templateSource);
 
