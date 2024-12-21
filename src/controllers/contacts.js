@@ -58,7 +58,15 @@ export const getContactById = async (req, res) => {
 // create
 export const createContactsController = async (req, res) => {
   try {
-    const photo = req.file ? await saveFileToCloudinary(req.file) : null;
+    let photo = null;
+
+    if (req.file) {
+      if (process.env.ENABLE_CLOUDINARY === 'true') {
+        photo = await saveFileToCloudinary(req.file);
+      } else {
+        photo = await saveFileToUploadDir(req.file);
+      }
+    }
 
     const contactData = {
       ...req.body,
@@ -124,30 +132,43 @@ export const deleteContactController = async (req, res) => {
 // patch
 export const patchStudentController = async (req, res, next) => {
   const { contactId } = req.params;
-  const photo = req.file;
 
-  let photoUrl;
+  let photoUrl = null;
 
-  if (photo) {
-    if (process.env.ENABLE_CLOUDINARY === 'true') {
-      photoUrl = await saveFileToCloudinary(photo);
-    } else {
-      photoUrl = await saveFileToUploadDir(photo);
+  try {
+    if (req.file) {
+      if (process.env.ENABLE_CLOUDINARY === 'true') {
+        photoUrl = await saveFileToCloudinary(req.file); // Cloudinary
+      } else {
+        photoUrl = await saveFileToUploadDir(req.file); // Local
+      }
     }
-  }
 
-  const result = await updateContact(contactId, {
-    ...req.body,
-    photo: photoUrl,
-  });
+    const updateData = {
+      ...req.body,
+      ...(photoUrl && { photo: photoUrl }),
+    };
 
-  if (!result) {
-    next(createHttpError(404, 'Contact not found'));
-    return;
+    const updatedContact = await updateContact(
+      contactId,
+      updateData,
+      req.user._id,
+    );
+
+    if (!updatedContact) {
+      return next(createHttpError(404, 'Contact not found'));
+    }
+
+    res.json({
+      status: 200,
+      message: 'Successfully patched a contact!',
+      data: updatedContact,
+    });
+  } catch (error) {
+    console.error('Error patching contact:', error);
+    res.status(error.status || 500).json({
+      status: error.status || 500,
+      message: error.message,
+    });
   }
-  res.json({
-    status: 200,
-    message: `Successfully patched a contact!`,
-    data: result,
-  });
 };

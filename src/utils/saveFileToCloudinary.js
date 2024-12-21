@@ -1,6 +1,7 @@
 // src/utils/saveFileToCloudinary.js
 import { v2 as cloudinary } from 'cloudinary';
 import fs from 'fs/promises';
+import createHttpError from 'http-errors';
 
 cloudinary.config({
   secure: true,
@@ -10,7 +11,12 @@ cloudinary.config({
 });
 
 export const saveFileToCloudinary = async (file) => {
-  const response = await cloudinary.uploader.upload(file.path);
-  await fs.unlink(file.path);
-  return response.secure_url;
+  try {
+    const response = await cloudinary.uploader.upload(file.path);
+    await fs.unlink(file.path);
+    return response.secure_url;
+  } catch (error) {
+    console.error('Cloudinary upload error:', error);
+    throw createHttpError(500, 'Error uploading file to Cloudinary');
+  }
 };
