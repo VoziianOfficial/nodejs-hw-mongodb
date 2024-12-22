@@ -90,30 +90,6 @@ export const createContactsController = async (req, res) => {
   }
 };
 
-// update
-export const updateContactController = async (req, res) => {
-  const { contactId } = req.params;
-  const updateData = req.body;
-
-  try {
-    const updatedContact = await updateContact(
-      contactId,
-      updateData,
-      req.user._id,
-    );
-    res.json({
-      status: 200,
-      message: 'Contact updated successfully',
-      data: updatedContact,
-    });
-  } catch (error) {
-    res.status(error.status || 500).json({
-      status: error.status || 500,
-      message: error.message,
-    });
-  }
-};
-
 // delete
 export const deleteContactController = async (req, res) => {
   const { contactId } = req.params;
@@ -129,8 +105,8 @@ export const deleteContactController = async (req, res) => {
   }
 };
 
-// patch
-export const patchStudentController = async (req, res, next) => {
+// update
+export const updateStudentController = async (req, res, next) => {
   const { contactId } = req.params;
 
   let photoUrl = null;

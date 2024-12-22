@@ -3,7 +3,7 @@ import { Router } from 'express';
 import {
   getContactById,
   createContactsController,
-  updateContactController,
+  updateStudentController,
   deleteContactController,
   getContactsController,
 } from '../controllers/contacts.js';
@@ -38,7 +38,7 @@ router.patch(
   upload.single('photo'),
   isValidId,
   validateBody(updateContactSchema),
-  ctrlWrapper(updateContactController),
+  ctrlWrapper(updateStudentController),
 );
 router.delete('/:contactId', isValidId, ctrlWrapper(deleteContactController));
 
