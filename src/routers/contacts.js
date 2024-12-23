@@ -3,7 +3,7 @@ import { Router } from 'express';
 import {
   getContactById,
   createContactsController,
-  updateStudentController,
+  updateContactController,
   deleteContactController,
   getContactsController,
 } from '../controllers/contacts.js';
@@ -19,7 +19,7 @@ import { upload } from '../middlewares/multer.js';
 
 const router = Router();
 
-// Аутентификация применяется ко всем маршрутам
+
 router.use(authenticate);
 
 router.get('/', ctrlWrapper(getContactsController));
@@ -38,7 +38,7 @@ router.patch(
   upload.single('photo'),
   isValidId,
   validateBody(updateContactSchema),
-  ctrlWrapper(updateStudentController),
+  ctrlWrapper(updateContactController),
 );
 router.delete('/:contactId', isValidId, ctrlWrapper(deleteContactController));
 

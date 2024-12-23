@@ -106,7 +106,7 @@ export const deleteContactController = async (req, res) => {
 };
 
 // update
-export const updateStudentController = async (req, res, next) => {
+export const updateContactController = async (req, res, next) => {
   const { contactId } = req.params;
 
   let photoUrl = null;
