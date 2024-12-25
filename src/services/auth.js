@@ -11,6 +11,7 @@ import handlebars from 'handlebars';
 import path from 'node:path';
 import fs from 'node:fs/promises';
 
+
 // Створення користувача  якщо його немає
 //register
 export const registerUser = async (payload) => {
@@ -167,4 +168,34 @@ export const resetPassword = async (payload) => {
     { password: encryptedPassword },
   );
   await SessionsCollection.deleteMany({ userId: user._id });
+};
+
+
+// loginOrSignupWithGoogle
+
+export const loginOrSignupWithGoogle = async (payload) => {
+  // Проверяем, существует ли пользователь с указанным email
+  let user = await UsersCollection.findOne({ email: payload.email });
+
+  // Если пользователь не найден, создаём случайный пароль
+  if (!user) {
+    const password = await bcrypt.hash(crypto.randomBytes(30).toString("base64"));
+
+    // Создаём нового пользователя с email, именем и случайным паролем
+    user = await UsersCollection.create({
+      email: payload.email,
+      name: payload.name,
+      password,
+    });
+    // Если пользователь найден, удаляем его старую сессию
+  } else {
+    await SessionsCollection.deleteOne({ userId: user._id });
+  }
+
+  const newSession = createSession();
+
+  return await SessionsCollection.create({
+    userId: user._id,
+    ...newSession,
+  });
 };
