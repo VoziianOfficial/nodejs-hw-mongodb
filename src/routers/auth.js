@@ -11,9 +11,10 @@ import { loginUserSchema } from '../validation/auth.js';
 import { loginUserController } from '../controllers/auth.js';
 import { logoutUserController } from '../controllers/auth.js';
 import { refreshUsersSessionController } from '../controllers/auth.js';
-import { requestResetEmailSchema, loginWithGoogleOAuthSchema } from '../validation/auth.js';
+import { requestResetEmailSchema } from '../validation/auth.js';
 import { requestResetEmailController } from '../controllers/auth.js';
 import { getGoogleOAuthUrlController } from '../controllers/auth.js';
+import { loginWithGoogleOAuthSchema } from '../validation/auth.js';
 import { loginWithGoogleController } from '../controllers/auth.js';
 
 
@@ -50,7 +51,10 @@ router.post(
 
 router.get('/get-oauth-url', ctrlWrapper(getGoogleOAuthUrlController));
 
-router.post('/confirm-auth', validateBody(loginWithGoogleOAuthSchema), ctrlWrapper(loginWithGoogleController),)
-
+router.post(
+  '/confirm-oauth',
+  validateBody(loginWithGoogleOAuthSchema),
+  ctrlWrapper(loginWithGoogleController),
+);
 
 export default router;

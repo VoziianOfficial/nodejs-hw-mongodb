@@ -1,7 +1,8 @@
-{"web":{
-"project_id":"contacts-app-445412",
+{"web":
+{
+"project_id":"contacts-app-445918",
 "auth_uri":"https://accounts.google.com/o/oauth2/auth",
 "token_uri":"https://oauth2.googleapis.com/token",
 "auth_provider_x509_cert_url":"https://www.googleapis.com/oauth2/v1/certs",
-"client_secret":"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",
-"redirect_uris":["http://localhost:3000/confirm-auth"]}}
+
+"redirect_uris":["http://localhost:3000/confirm-google-auth"]}}
