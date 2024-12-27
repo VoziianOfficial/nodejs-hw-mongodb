@@ -120,6 +120,7 @@ export const requestResetToken = async (email) => {
   const template = handlebars.compile(templateSource);
 
   const resetLink = `${process.env.APP_DOMAIN}/reset-password?token=${resetToken}`;
+
   const html = template({
     name: user.name,
     link: resetLink,
@@ -150,7 +151,7 @@ export const resetPassword = async (payload) => {
   } catch (err) {
     if (err instanceof Error)
       throw createHttpError(401, 'Token is expired or invalid.');
-    throw err;
+    throw createHttpError(500, 'An unexpected error occurred.');
   }
 
   const user = await UsersCollection.findOne({
@@ -172,55 +173,29 @@ export const resetPassword = async (payload) => {
 };
 
 //loginOrSignupWithGoogle
-// export const loginOrSignupWithGoogle = async (code) => {
-//   const loginTicket = await validateCode(code);
-//   const payload = loginTicket.getPayload();
-//   if (!payload) throw createHttpError(401);
-
-//   let user = await UsersCollection.findOne({ email: payload.email });
-//   if (!user) {
-//     const password = await bcrypt.hash(randomBytes(10), 10);
-//     user = await UsersCollection.create({
-//       email: payload.email,
-//       name: getFullNameFromGoogleTokenPayload(payload),
-//       password,
-//     });
-//   }
-//   const newSession = createSession();
-
-//   return await SessionsCollection.create({
-//     UserId: user._id,
-//     ...newSession,
-//   });
-// };
-
 export const loginOrSignupWithGoogle = async (code) => {
-  try {
-    console.log('Получен код Google OAuth:', code);
-    const loginTicket = await validateCode(code);
-    const payload = loginTicket.getPayload();
-    if (!payload) throw createHttpError(401, 'Неверные данные от Google OAuth');
-    console.log('Данные от Google OAuth:', payload);
+  const loginTicket = await validateCode(code);
+  const payload = loginTicket.getPayload();
+  if (!payload) throw createHttpError(401);
 
-    let user = await UsersCollection.findOne({ email: payload.email });
-    if (!user) {
-      const password = await bcrypt.hash(randomBytes(10), 10);
-      user = await UsersCollection.create({
-        email: payload.email,
-        name: getFullNameFromGoogleTokenPayload(payload),
-        password,
-      });
-    }
-    const newSession = createSession();
-    return await SessionsCollection.create({
-      UserId: user._id,
-      ...newSession,
+  let user = await UsersCollection.findOne({ email: payload.email });
+  if (!user) {
+    const password = await bcrypt.hash(randomBytes(10), 10);
+    user = await UsersCollection.create({
+      email: payload.email,
+      name: getFullNameFromGoogleTokenPayload(payload),
+      password,
     });
-  } catch (error) {
-    console.error('Ошибка при авторизации или регистрации с Google:', error);
-    throw createHttpError(500, 'Внутренняя ошибка сервера');
   }
+  const newSession = createSession();
+
+  return await SessionsCollection.create({
+    userId: user._id,
+    ...newSession,
+  });
 };
+
+
 
 
 

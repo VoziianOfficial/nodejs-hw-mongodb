@@ -22,7 +22,6 @@ export const generateAuthUrl = () =>
 
 export const validateCode = async (code) => {
     const response = await googleOAuthClient.getToken(code);
-
     if (!response.tokens.id_token) throw createHttpError(401, 'Unauthorized');
 
     const ticket = await googleOAuthClient.verifyIdToken({
@@ -38,6 +37,5 @@ export const getFullNameFromGoogleTokenPayload = (payload) => {
     } else if (payload.given_name) {
         fullName = payload.given_name;
     }
-
     return fullName;
 };
