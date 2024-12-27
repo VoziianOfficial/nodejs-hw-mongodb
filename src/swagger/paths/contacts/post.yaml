@@ -1,0 +1,64 @@
+#swagger/paths/contacts/post.yaml
+
+tags:
+  - Contacts
+summary: Create a new contact
+operationId: createContact
+description: Create a new contact with the provided information.
+security:
+  - bearerAuth: []
+requestBody:
+  required: true
+  content:
+    application/json:
+      schema:
+        type: object
+        required:
+          - name
+          - phoneNumber
+          - contactType
+        properties:
+          name:
+            type: string
+            description: Name of the contact
+            example: "John Doe"
+          phoneNumber:
+            type: string
+            description: Phone number of the contact
+            example: "+1234567890"
+          email:
+            type: string
+            description: Email address of the contact
+            example: "john.doe@example.com"
+          contactType:
+            type: string
+            description: Type of the contact
+            enum:
+              - work
+              - home
+              - personal
+            example: "work"
+responses:
+  '201':
+    description: Contact created successfully
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - status
+            - message
+            - data
+          properties:
+            status:
+              type: integer
+              example: 201
+            message:
+              type: string
+              example: Contact created successfully.
+            data:
+              $ref: ../../components/schema/contacts.yaml
+  '400':
+    description: Bad request
+  '401':
+    $ref: ../../components/responses/401.yaml
