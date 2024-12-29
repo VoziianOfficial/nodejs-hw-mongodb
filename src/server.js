@@ -28,8 +28,6 @@ export const setupServer = () => {
   // Подключение маршрутов
   app.use(router);
 
-  // Обработка несуществующих маршрутов
-  app.use('*', notFoundHandler);
 
   // Обработка ошибок
   app.use(errorHandler);
@@ -43,6 +41,9 @@ export const setupServer = () => {
 
   app.use('/uploads', express.static(UPLOAD_DIR));
   app.use('/api-docs', swaggerDocs());
+
+  // Обработка несуществующих маршрутов
+  app.use('*', notFoundHandler);
 };
 
 
