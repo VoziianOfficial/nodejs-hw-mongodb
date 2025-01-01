@@ -10,9 +10,9 @@ tags:
   - name: Contacts
     description: Operations related to contacts
 servers:
-  - url: https://your-server.com/api/v1
+  - url: https://nodejs-hw-mongodb-finish.onrender.com
     description: Production server
-  - url: http://localhost:3000
+  - url: http://127.0.0.1:3000
     description: Local development server
 paths:
   /contacts:
