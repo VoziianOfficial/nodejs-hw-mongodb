@@ -1,36 +1,53 @@
-# swagger/components/schemas/student.yaml
-
 type: object
 required:
+  - _id
   - name
   - phoneNumber
   - contactType
+  - userId
+  - createdAt
+  - updatedAt
 properties:
+  _id:
+    type: string
+    description: Unique ID of the contact.
+    example: "674c7ea11a75750f5f9b86d4"
   name:
     type: string
-    description: Name of the contact
-    example: John Doe
+    description: Full name of the contact.
+    example: "John Doe"
   phoneNumber:
     type: string
-    description: Phone number of the contact
-    example: '+1234567890'
+    description: Contact's phone number.
+    example: "+123456789"
   email:
     type: string
-    description: Email address of the contact
-    example: john.doe@example.com
-  isFavourite:
+    description: Contact's email address.
+    example: "johndoe@example.com"
+  isFavorite:
     type: boolean
-    description: Whether the contact is marked as favorite
-    example: false
+    description: Marks contact as favorite.
+    example: true
   contactType:
     type: string
-    description: Type of the contact
-    enum:
-      - work
-      - home
-      - personal
-    example: personal
+    description: Type of contact.
+    enum: [work, home, personal]
+    example: "personal"
+  userId:
+    type: string
+    description: Unique ID of the contact's owner.
+    example: "674dc213e880c5a6c4e30b19"
   photo:
     type: string
-    description: Link to the contact's photo
-    example: https://example.com/photo.jpg
+    description: Contact's photo URL.
+    example: Link to the contact's photo
+  createdAt:
+    type: string
+    format: date-time
+    description: Timestamp when the contact was created (ISO 8601).
+    example: "2024-12-01T12:34:56Z"
+  updatedAt:
+    type: string
+    format: date-time
+    description: Timestamp when the contact was last updated (ISO 8601).
+    example: "2024-12-02T08:15:30Z"

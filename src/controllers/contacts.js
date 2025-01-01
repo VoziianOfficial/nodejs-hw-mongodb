@@ -60,6 +60,11 @@ export const createContactsController = async (req, res) => {
   try {
     let photo = null;
 
+
+    if (!req.body.name || !req.body.phoneNumber || !req.body.contactType) {
+      throw createHttpError(400, 'Name, phoneNumber, and contactType are required.');
+    }
+
     if (req.file) {
       if (process.env.ENABLE_CLOUDINARY === 'true') {
         photo = await saveFileToCloudinary(req.file);
@@ -95,7 +100,11 @@ export const deleteContactController = async (req, res) => {
   const { contactId } = req.params;
 
   try {
-    await deleteContact(contactId, req.user._id);
+    const contact = await deleteContact(contactId, req.user._id);
+    if (!contact) {
+      throw createHttpError(404, 'Contact not found');
+    }
+
     res.status(204).send();
   } catch (error) {
     res.status(error.status || 500).json({

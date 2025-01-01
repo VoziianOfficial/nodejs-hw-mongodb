@@ -1,5 +1,3 @@
-# swagger/paths/contacts/{id}/get.yaml
-
 tags:
   - Contacts
 summary: Get contact by ID
@@ -13,7 +11,9 @@ parameters:
     required: true
     schema:
       type: string
+      format: uuid
       example: '65ca67e7ae7f10c88b598384'
+      description: The unique ID of the contact to retrieve.
 responses:
   '200':
     description: Successfully retrieved contact
@@ -33,9 +33,8 @@ responses:
               type: string
               example: Successfully found contact with ID 65ca67e7ae7f10c88b598384!
             data:
-              type: object
               $ref: '../../../components/schema/contacts.yaml'
-  '404':
+  '204':
     description: Contact not found
     content:
       application/json:
@@ -47,9 +46,41 @@ responses:
           properties:
             status:
               type: integer
-              example: 404
+              example: 204
             message:
               type: string
-              example: Contact not found.
+              example: No contact found with the provided ID.
+  '400':
+    description: Invalid ID format
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - status
+            - message
+          properties:
+            status:
+              type: integer
+              example: 400
+            message:
+              type: string
+              example: Invalid ID format.
   '401':
     $ref: ../../../components/responses/401.yaml
+  '500':
+    description: Internal server error
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - status
+            - message
+          properties:
+            status:
+              type: integer
+              example: 500
+            message:
+              type: string
+              example: Internal server error.

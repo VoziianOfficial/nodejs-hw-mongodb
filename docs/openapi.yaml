@@ -10,8 +10,10 @@ tags:
   - name: Contacts
     description: Operations related to contacts
 servers:
+  - url: https://your-server.com/api/v1
+    description: Production server
   - url: http://localhost:3000
-  - url: https://example.com/api/v1
+    description: Local development server
 paths:
   /contacts:
     get:
