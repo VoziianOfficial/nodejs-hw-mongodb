@@ -1,39 +1,67 @@
-#/swagger/paths/contacts/get.yaml
 tags:
   - Contacts
 summary: Get all contacts
-operationId: getAllContacts
-description: Retrieve a list of all contacts with optional filtering, sorting, and pagination.
+operationId: getContacts
+description: Get all user contacts.
 security:
   - bearerAuth: []
 parameters:
   - in: query
     name: page
+    description: Page number for pagination.
     schema:
       type: integer
-      description: Page number for pagination
       example: 1
+      default: 1
   - in: query
-    name: limit
+    name: perPage
+    description: Number of contacts per page.
     schema:
       type: integer
-      description: Number of items per page
       example: 10
-  - in: query
-    name: search
-    schema:
-      type: string
-      description: Search term to filter contacts by name or phone number
-      example: "John"
+      default: 10
   - in: query
     name: sortBy
+    description: Sort results by a field.
     schema:
       type: string
-      description: Field to sort by (e.g., name, createdAt)
+      enum:
+        [
+          "_id",
+          "name",
+          "phoneNumber",
+          "email",
+          "isFavorite",
+          "contactType",
+          "createdAt",
+          "updatedAt",
+        ]
       example: "name"
+      default: "_id"
+  - in: query
+    name: sortOrder
+    description: Sorting order.
+    schema:
+      type: string
+      enum: ["asc", "desc"]
+      example: "asc"
+      default: "asc"
+  - in: query
+    name: type
+    description: Filter by contact type.
+    schema:
+      type: string
+      enum: ["work", "home", "personal"]
+      example: "work"
+  - in: query
+    name: isFavorite
+    description: Filter by favorite status.
+    schema:
+      type: boolean
+      example: true
 responses:
-  '200':
-    description: Successfully retrieved list of contacts
+  "200":
+    description: Successfully retrieved user contact list.
     content:
       application/json:
         schema:
@@ -48,10 +76,48 @@ responses:
               example: 200
             message:
               type: string
-              example: Contacts retrieved successfully.
+              example: "Successfully found contacts!"
             data:
-              type: array
-              items:
-                $ref: ../../components/schema/contacts.yaml
-  '401':
+              type: object
+              required:
+                - data
+                - page
+                - perPage
+                - totalItems
+                - totalPages
+                - hasPreviousPage
+                - hasNextPage
+              properties:
+                data:
+                  type: array
+                  description: List of contacts matching filters, sorted, and paginated.
+                  items:
+                    $ref: ../../components/schema/contacts.yaml
+                page:
+                  type: number
+                  description: Current page number.
+                  example: 1
+                perPage:
+                  type: number
+                  description: Number of contacts per page.
+                  example: 10
+                totalItems:
+                  type: number
+                  description: Total number of contacts matching the filters.
+                  example: 15
+                totalPages:
+                  type: number
+                  description: Total number of pages.
+                  example: 2
+                hasPreviousPage:
+                  type: boolean
+                  description: Indicates if there is a previous page.
+                  example: false
+                hasNextPage:
+                  type: boolean
+                  description: Indicates if there is a next page.
+                  example: true
+  "401":
     $ref: ../../components/responses/401.yaml
+  "500":
+    $ref: ../../components/responses/500.yaml
