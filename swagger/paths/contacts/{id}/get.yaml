@@ -1,22 +1,21 @@
 tags:
   - Contacts
-summary: Get contact by ID
-operationId: getContactById
-description: Retrieve a specific contact by its unique ID.
+summary: Get contact by id
+operationId: getContact
+description: Get a contact by its ID.
 security:
   - bearerAuth: []
 parameters:
   - in: path
     name: id
+    description: Unique ID of the contact to retrieve.
     required: true
     schema:
       type: string
-      format: uuid
-      example: '65ca67e7ae7f10c88b598384'
-      description: The unique ID of the contact to retrieve.
+      example: "674c7ea11a75750f5f9b86d4"
 responses:
-  '200':
-    description: Successfully retrieved contact
+  "200":
+    description: Successfully retrieved user contact by ID.
     content:
       application/json:
         schema:
@@ -31,56 +30,15 @@ responses:
               example: 200
             message:
               type: string
-              example: Successfully found contact with ID 65ca67e7ae7f10c88b598384!
+              example: "Successfully found contact with ID 674c7ea11a75750f5f9b86d4!"
             data:
-              $ref: '../../../components/schema/contacts.yaml'
-  '204':
-    description: Contact not found
-    content:
-      application/json:
-        schema:
-          type: object
-          required:
-            - status
-            - message
-          properties:
-            status:
-              type: integer
-              example: 204
-            message:
-              type: string
-              example: No contact found with the provided ID.
-  '400':
-    description: Invalid ID format
-    content:
-      application/json:
-        schema:
-          type: object
-          required:
-            - status
-            - message
-          properties:
-            status:
-              type: integer
-              example: 400
-            message:
-              type: string
-              example: Invalid ID format.
-  '401':
+              type: object
+              $ref: ../../../components/schema/contacts.yaml
+  "400":
+    $ref: ../../../components/responses/400.yaml
+  "401":
     $ref: ../../../components/responses/401.yaml
-  '500':
-    description: Internal server error
-    content:
-      application/json:
-        schema:
-          type: object
-          required:
-            - status
-            - message
-          properties:
-            status:
-              type: integer
-              example: 500
-            message:
-              type: string
-              example: Internal server error.
+  "404":
+    $ref: ../../../components/responses/404.yaml
+  "500":
+    $ref: ../../../components/responses/500.yaml
