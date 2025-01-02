@@ -81,5 +81,11 @@ export const deleteContact = async (contactId, userId) => {
     userId: userId,
   });
 
+  if (!deletedContact) {
+    throw createHttpError(404, 'Contact not found');
+  }
+
   return deletedContact;
 };
+
+
