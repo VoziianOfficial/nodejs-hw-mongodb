@@ -10,7 +10,7 @@ tags:
   - name: Contacts
     description: Operations related to contacts
 servers:
-  - url: https://nodejs-hw-mongodb-finish.onrender.com
+  - url: https://nodejs-hw-mongodb-13-9b96.onrender.com
     description: Production server
   - url: http://127.0.0.1:3000
     description: Local development server
