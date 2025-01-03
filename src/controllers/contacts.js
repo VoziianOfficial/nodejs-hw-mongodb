@@ -12,15 +12,23 @@ import { saveFileToCloudinary } from '../utils/saveFileToCloudinary.js';
 
 // get all
 export const getContactsController = async (req, res) => {
-  const { page, perPage, sortBy, sortOrder, filter } = req.query;
+  const { page, perPage, sortBy, sortOrder, contactType, isFavourite } = req.query;
 
   try {
+
+    const filter = { userId: req.user._id };
+
+    if (contactType) filter.contactType = contactType;
+    if (isFavourite !== undefined) {
+      filter.isFavourite = isFavourite === 'true';
+    }
+
     const { data, ...meta } = await getAllContacts({
       page,
       perPage,
       sortBy,
       sortOrder,
-      filter: { ...filter, userId: req.user._id },
+      filter,
     });
 
     res.json({
@@ -35,6 +43,7 @@ export const getContactsController = async (req, res) => {
     });
   }
 };
+
 
 // get by id
 export const getContactById = async (req, res) => {
