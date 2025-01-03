@@ -55,7 +55,7 @@ export const getContactById = async (req, res) => {
   }
 };
 
-// create
+// createContactsController
 export const createContactsController = async (req, res) => {
   try {
     let photo = null;
@@ -65,6 +65,7 @@ export const createContactsController = async (req, res) => {
       throw createHttpError(400, 'Name, phoneNumber, and contactType are required.');
     }
 
+
     if (req.file) {
       if (process.env.ENABLE_CLOUDINARY === 'true') {
         photo = await saveFileToCloudinary(req.file);
@@ -73,13 +74,20 @@ export const createContactsController = async (req, res) => {
       }
     }
 
+
     const contactData = {
-      ...req.body,
+      name: req.body.name,
+      phoneNumber: req.body.phoneNumber,
+      email: req.body.email || null,
+      contactType: req.body.contactType,
+      isFavourite: req.body.isFavourite === 'true' || req.body.isFavourite === true, // Преобразование в булево
       userId: req.user._id,
       photo,
     };
 
+
     const contact = await createContact(contactData);
+
 
     res.status(201).json({
       status: 201,
@@ -94,6 +102,7 @@ export const createContactsController = async (req, res) => {
     });
   }
 };
+
 
 // delete
 export const deleteContactController = async (req, res) => {

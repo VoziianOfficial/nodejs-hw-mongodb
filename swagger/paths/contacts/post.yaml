@@ -36,6 +36,10 @@ requestBody:
               - home
               - personal
             example: "work"
+          isFavourite:
+            type: boolean
+            description: Mark the contact as a favourite
+            example: true
           photo:
             type: string
             format: binary
