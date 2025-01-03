@@ -1,3 +1,4 @@
+#swagger/components/responses/404.yaml
 description: Resource not found due to an invalid route, missing user, or missing contact in the system.
 content:
   application/json:
