@@ -2,7 +2,7 @@ tags:
   - Contacts
 summary: Get all contacts
 operationId: getContacts
-description: Get all user contacts.
+description: Get all user contacts with optional sorting and pagination.
 security:
   - bearerAuth: []
 parameters:
@@ -22,43 +22,19 @@ parameters:
       default: 10
   - in: query
     name: sortBy
-    description: Sort results by a field.
+    description: Field to sort by (e.g., `name`).
     schema:
       type: string
-      enum:
-        [
-          "_id",
-          "name",
-          "phoneNumber",
-          "email",
-          "isFavorite",
-          "contactType",
-          "createdAt",
-          "updatedAt",
-        ]
       example: "name"
-      default: "_id"
+      default: "name"
   - in: query
     name: sortOrder
-    description: Sorting order.
+    description: Sort order (`asc` for ascending, `desc` for descending).
     schema:
       type: string
-      enum: ["asc", "desc"]
+      enum: [asc, desc]
       example: "asc"
       default: "asc"
-  - in: query
-    name: type
-    description: Filter by contact type.
-    schema:
-      type: string
-      enum: ["work", "home", "personal"]
-      example: "work"
-  - in: query
-    name: isFavorite
-    description: Filter by favorite status.
-    schema:
-      type: boolean
-      example: true
 responses:
   "200":
     description: Successfully retrieved user contact list.

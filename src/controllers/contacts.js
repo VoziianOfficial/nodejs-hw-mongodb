@@ -12,23 +12,16 @@ import { saveFileToCloudinary } from '../utils/saveFileToCloudinary.js';
 
 // get all
 export const getContactsController = async (req, res) => {
-  const { page, perPage, sortBy, sortOrder, contactType, isFavourite } = req.query;
+  const { page, perPage, sortBy = 'name', sortOrder = 'asc' } = req.query;
 
   try {
-
     const filter = { userId: req.user._id };
-
-    if (contactType) filter.contactType = contactType;
-    if (isFavourite !== undefined) {
-      filter.isFavourite = isFavourite === 'true';
-    }
 
     const { data, ...meta } = await getAllContacts({
       page,
       perPage,
-      sortBy,
-      sortOrder,
       filter,
+      sort: { [sortBy]: sortOrder === 'asc' ? 1 : -1 },
     });
 
     res.json({
@@ -43,6 +36,7 @@ export const getContactsController = async (req, res) => {
     });
   }
 };
+
 
 
 // get by id
@@ -70,9 +64,10 @@ export const createContactsController = async (req, res) => {
     let photo = null;
 
 
-    if (!req.body.name || !req.body.phoneNumber || !req.body.contactType) {
-      throw createHttpError(400, 'Name, phoneNumber, and contactType are required.');
+    if (!req.body.name || !req.body.phoneNumber) {
+      throw createHttpError(400, 'Name and phoneNumber are required.');
     }
+
 
 
     if (req.file) {
@@ -88,11 +83,10 @@ export const createContactsController = async (req, res) => {
       name: req.body.name,
       phoneNumber: req.body.phoneNumber,
       email: req.body.email || null,
-      contactType: req.body.contactType,
-      isFavourite: req.body.isFavourite === 'true' || req.body.isFavourite === true, // Преобразование в булево
       userId: req.user._id,
       photo,
     };
+
 
 
     const contact = await createContact(contactData);
@@ -155,6 +149,7 @@ export const updateContactController = async (req, res, next) => {
       ...req.body,
       ...(photoUrl && { photo: photoUrl }),
     };
+
 
     const updatedContact = await updateContact(
       contactId,

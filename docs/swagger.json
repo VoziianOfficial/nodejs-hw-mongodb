@@ -33,7 +33,7 @@
         ],
         "summary": "Get all contacts",
         "operationId": "getContacts",
-        "description": "Get all user contacts.",
+        "description": "Get all user contacts with optional sorting and pagination.",
         "security": [
           {
             "bearerAuth": []
@@ -63,27 +63,17 @@
           {
             "in": "query",
             "name": "sortBy",
-            "description": "Sort results by a field.",
+            "description": "Field to sort by (e.g., `name`).",
             "schema": {
               "type": "string",
-              "enum": [
-                "_id",
-                "name",
-                "phoneNumber",
-                "email",
-                "isFavorite",
-                "contactType",
-                "createdAt",
-                "updatedAt"
-              ],
               "example": "name",
-              "default": "_id"
+              "default": "name"
             }
           },
           {
             "in": "query",
             "name": "sortOrder",
-            "description": "Sorting order.",
+            "description": "Sort order (`asc` for ascending, `desc` for descending).",
             "schema": {
               "type": "string",
               "enum": [
@@ -92,29 +82,6 @@
               ],
               "example": "asc",
               "default": "asc"
-            }
-          },
-          {
-            "in": "query",
-            "name": "type",
-            "description": "Filter by contact type.",
-            "schema": {
-              "type": "string",
-              "enum": [
-                "work",
-                "home",
-                "personal"
-              ],
-              "example": "work"
-            }
-          },
-          {
-            "in": "query",
-            "name": "isFavorite",
-            "description": "Filter by favorite status.",
-            "schema": {
-              "type": "boolean",
-              "example": true
             }
           }
         ],
@@ -223,8 +190,7 @@
                 "type": "object",
                 "required": [
                   "name",
-                  "phoneNumber",
-                  "contactType"
+                  "phoneNumber"
                 ],
                 "properties": {
                   "name": {
@@ -241,21 +207,6 @@
                     "type": "string",
                     "description": "Email address of the contact",
                     "example": "john.doe@example.com"
-                  },
-                  "contactType": {
-                    "type": "string",
-                    "description": "Type of the contact",
-                    "enum": [
-                      "work",
-                      "home",
-                      "personal"
-                    ],
-                    "example": "work"
-                  },
-                  "isFavourite": {
-                    "type": "boolean",
-                    "description": "Mark the contact as a favourite",
-                    "example": true
                   },
                   "photo": {
                     "type": "string",
@@ -416,20 +367,6 @@
                     "type": "string",
                     "example": "jane.doe@example.com"
                   },
-                  "isFavourite": {
-                    "type": "boolean",
-                    "example": true
-                  },
-                  "contactType": {
-                    "type": "string",
-                    "description": "Type of contact.",
-                    "enum": [
-                      "work",
-                      "home",
-                      "personal"
-                    ],
-                    "example": "personal"
-                  },
                   "photo": {
                     "type": "string",
                     "format": "binary",
@@ -537,7 +474,6 @@
           "_id",
           "name",
           "phoneNumber",
-          "contactType",
           "userId",
           "createdAt",
           "updatedAt"
@@ -562,21 +498,6 @@
             "type": "string",
             "description": "Contact's email address.",
             "example": "johndoe@example.com"
-          },
-          "isFavorite": {
-            "type": "boolean",
-            "description": "Marks contact as favorite.",
-            "example": true
-          },
-          "contactType": {
-            "type": "string",
-            "description": "Type of contact.",
-            "enum": [
-              "work",
-              "home",
-              "personal"
-            ],
-            "example": "personal"
           },
           "userId": {
             "type": "string",

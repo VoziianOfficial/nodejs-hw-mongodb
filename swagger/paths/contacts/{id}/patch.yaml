@@ -30,14 +30,6 @@ requestBody:
           email:
             type: string
             example: "jane.doe@example.com"
-          isFavourite:
-            type: boolean
-            example: true
-          contactType:
-            type: string
-            description: Type of contact.
-            enum: [work, home, personal]
-            example: "personal"
           photo:
             type: string
             format: binary

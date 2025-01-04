@@ -7,26 +7,28 @@ import { calculatePaginationData } from '../utils/calculatePaginationData.js';
 export const getAllContacts = async ({
   page = 1,
   perPage = 10,
-  sortBy = '_id',
-  sortOrder = 'asc',
   filter = {},
+  sort = { name: 1 },
 }) => {
   const limit = parseInt(perPage, 10);
   const skip = (parseInt(page, 10) - 1) * limit;
 
   try {
     console.log('Filter applied:', filter);
-    console.log('Pagination params:', { page, perPage, limit, skip }); // Проверка пагинации
+    console.log('Pagination params:', { page, perPage, limit, skip });
+    console.log('Sort params:', sort);
 
-    const contactsQuery = ContactsCollection.find(filter);
+
+    const contactsQuery = ContactsCollection.find({ userId: filter.userId }).sort(sort);
+
+
     const totalCount = await ContactsCollection.find()
       .merge(contactsQuery)
       .countDocuments();
 
-    const contacts = await contactsQuery
-      .skip(skip)
-      .limit(limit)
-      .sort({ [sortBy]: sortOrder });
+
+    const contacts = await contactsQuery.skip(skip).limit(limit);
+
 
     const paginationData = calculatePaginationData(totalCount, perPage, page);
 
@@ -36,6 +38,7 @@ export const getAllContacts = async ({
     throw createHttpError(500, 'Failed to fetch contacts');
   }
 };
+
 
 
 // Получение контакта по ID

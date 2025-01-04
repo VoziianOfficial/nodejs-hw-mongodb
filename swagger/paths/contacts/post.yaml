@@ -14,7 +14,6 @@ requestBody:
         required:
           - name
           - phoneNumber
-          - contactType
         properties:
           name:
             type: string
@@ -28,18 +27,6 @@ requestBody:
             type: string
             description: Email address of the contact
             example: "john.doe@example.com"
-          contactType:
-            type: string
-            description: Type of the contact
-            enum:
-              - work
-              - home
-              - personal
-            example: "work"
-          isFavourite:
-            type: boolean
-            description: Mark the contact as a favourite
-            example: true
           photo:
             type: string
             format: binary
