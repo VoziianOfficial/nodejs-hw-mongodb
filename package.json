@@ -4,7 +4,7 @@
   "description": "",
   "type": "module",
   "main": "src/index.js",
- "scripts": {
+  "scripts": {
     "dev": "nodemon src/index.js",
     "start": "node src/index.js",
     "build": "npm run build-docs",
@@ -35,7 +35,7 @@
     "joi": "^17.13.3",
     "jsonwebtoken": "^9.0.2",
     "mongodb": "^6.10.0",
-    "mongoose": "^8.8.2",
+    "mongoose": "^8.9.3",
     "multer": "^1.4.5-lts.1",
     "nodemailer": "^6.9.16",
     "pino-http": "^10.3.0",

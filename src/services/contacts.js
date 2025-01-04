@@ -11,10 +11,13 @@ export const getAllContacts = async ({
   sortOrder = 'asc',
   filter = {},
 }) => {
-  const limit = perPage;
-  const skip = (page - 1) * perPage;
+  const limit = parseInt(perPage, 10);
+  const skip = (parseInt(page, 10) - 1) * limit;
 
   try {
+    console.log('Filter applied:', filter);
+    console.log('Pagination params:', { page, perPage, limit, skip }); // Проверка пагинации
+
     const contactsQuery = ContactsCollection.find(filter);
     const totalCount = await ContactsCollection.find()
       .merge(contactsQuery)
@@ -34,6 +37,7 @@ export const getAllContacts = async ({
   }
 };
 
+
 // Получение контакта по ID
 export const getContactByIdService = async (contactId, userId) => {
   if (!contactId) throw createHttpError(400, 'Contact ID is required');
@@ -46,19 +50,23 @@ export const getContactByIdService = async (contactId, userId) => {
 
 // Создание контакта
 export const createContact = async (payload) => {
-  const existingContact = await ContactsCollection.findOne({
-    email: payload.email,
-    userId: payload.userId,
-  });
-  if (existingContact) {
-    throw createHttpError(
-      400,
-      `Contact with email ${payload.email} already exists`,
-    );
+  if (payload.email) {
+    const existingContact = await ContactsCollection.findOne({
+      email: payload.email,
+      userId: payload.userId,
+    });
+
+    if (existingContact) {
+      throw createHttpError(
+        400,
+        `Contact with email ${payload.email} already exists`
+      );
+    }
   }
 
   return await ContactsCollection.create(payload);
 };
+
 
 // Обновление контакта
 export const updateContact = async (contactId, updateData, userId) => {
