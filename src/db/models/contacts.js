@@ -19,17 +19,18 @@ const contactsSchema = new Schema(
       ref: 'users',
       required: true,
     },
-    photo: {
-      type: String,
-    },
-    isFavorite: {
+    isFavourite: {
       type: Boolean,
       default: false,
     },
     contactType: {
       type: String,
       enum: ['work', 'home', 'personal'],
+      required: true,
       default: 'personal',
+    },
+    photo: {
+      type: String,
     },
   },
   {
@@ -37,7 +38,5 @@ const contactsSchema = new Schema(
     versionKey: false,
   },
 );
-
-
 
 export const ContactsCollection = model('contacts', contactsSchema);

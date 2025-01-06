@@ -213,7 +213,7 @@
                     "format": "binary",
                     "description": "Contact's photo file"
                   },
-                  "isFavorite": {
+                  "isFavourite": {
                     "type": "boolean",
                     "description": "Mark contact as favorite",
                     "example": true
@@ -388,7 +388,7 @@
                     "format": "binary",
                     "description": "Contact's photo file"
                   },
-                  "isFavorite": {
+                  "isFavourite": {
                     "type": "boolean",
                     "description": "Mark contact as favorite",
                     "example": true
@@ -553,7 +553,7 @@
             "description": "Timestamp when the contact was last updated (ISO 8601).",
             "example": "2024-12-02T08:15:30Z"
           },
-          "isFavorite": {
+          "isFavourite": {
             "type": "boolean",
             "description": "Mark contact as favorite",
             "example": true

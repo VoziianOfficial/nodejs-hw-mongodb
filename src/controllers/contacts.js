@@ -85,6 +85,8 @@ export const createContactsController = async (req, res) => {
       email: req.body.email || null,
       userId: req.user._id,
       photo,
+      isFavourite: req.body.isFavourite ?? false,
+      contactType: req.body.contactType || 'personal',
     };
 
 

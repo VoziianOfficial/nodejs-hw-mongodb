@@ -31,7 +31,7 @@ requestBody:
             type: string
             format: binary
             description: Contact's photo file
-          isFavorite:
+          isFavourite:
             type: boolean
             description: Mark contact as favorite
             example: true
