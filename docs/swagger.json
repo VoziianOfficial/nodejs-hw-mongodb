@@ -212,6 +212,21 @@
                     "type": "string",
                     "format": "binary",
                     "description": "Contact's photo file"
+                  },
+                  "isFavorite": {
+                    "type": "boolean",
+                    "description": "Mark contact as favorite",
+                    "example": true
+                  },
+                  "contactType": {
+                    "type": "string",
+                    "description": "Type of contact",
+                    "enum": [
+                      "work",
+                      "home",
+                      "personal"
+                    ],
+                    "example": "personal"
                   }
                 }
               }
@@ -240,6 +255,7 @@
                       "example": "Contact created successfully."
                     },
                     "data": {
+                      "type": "object",
                       "$ref": "#/components/schemas/contacts"
                     }
                   }
@@ -371,6 +387,21 @@
                     "type": "string",
                     "format": "binary",
                     "description": "Contact's photo file"
+                  },
+                  "isFavorite": {
+                    "type": "boolean",
+                    "description": "Mark contact as favorite",
+                    "example": true
+                  },
+                  "contactType": {
+                    "type": "string",
+                    "description": "Type of contact",
+                    "enum": [
+                      "work",
+                      "home",
+                      "personal"
+                    ],
+                    "example": "work"
                   }
                 }
               }
@@ -399,6 +430,7 @@
                       "example": "Contact updated successfully."
                     },
                     "data": {
+                      "type": "object",
                       "$ref": "#/components/schemas/contacts"
                     }
                   }
@@ -520,6 +552,21 @@
             "format": "date-time",
             "description": "Timestamp when the contact was last updated (ISO 8601).",
             "example": "2024-12-02T08:15:30Z"
+          },
+          "isFavorite": {
+            "type": "boolean",
+            "description": "Mark contact as favorite",
+            "example": true
+          },
+          "contactType": {
+            "type": "string",
+            "description": "Type of contact",
+            "enum": [
+              "work",
+              "home",
+              "personal"
+            ],
+            "example": "personal"
           }
         }
       }

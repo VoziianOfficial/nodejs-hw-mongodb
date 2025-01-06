@@ -34,6 +34,15 @@ requestBody:
             type: string
             format: binary
             description: Contact's photo file
+          isFavorite:
+            type: boolean
+            description: Mark contact as favorite
+            example: true
+          contactType:
+            type: string
+            description: Type of contact
+            enum: [work, home, personal]
+            example: "work"
 responses:
   '200':
     description: Contact updated successfully
@@ -53,6 +62,7 @@ responses:
               type: string
               example: Contact updated successfully.
             data:
+              type: object
               $ref: ../../../components/schema/contacts.yaml
   "400":
     $ref: ../../../components/responses/400.yaml
